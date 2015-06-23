@@ -1,1 +1,1 @@
-# simple-web-scraper
+# hacker-skills
