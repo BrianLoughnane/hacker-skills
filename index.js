@@ -17,10 +17,9 @@ var url;
 app.get('/scrape', function (req, res) {
 
   // the url we will scrape from
-  url = 'http://www.imdb.com/title/tt1229340';
+  url = ''
 
   // the structure of our request call
-
   request(url, function (error, response, html) {
     if(error) throw error;
 
@@ -28,16 +27,15 @@ app.get('/scrape', function (req, res) {
     var $ = cheerio.load(html);
 
     // define a json object
-    var json = {title: "", release: "", rating: ""};
+    var json = {};
 
-    var title = $('.header').children().first().text();
-    var release = $('.header').children().last().children().text();
-    var rating = $('.star-box-giga-star').text();
+    // traverse DOM to scaper data
+    var data = $('body'); //etc
 
-    json.title = title;
-    json.release = release;
-    json.rating = rating;
+    // set json data
+    json.data = data; //etc
 
+    //write scraped data to a file
     fs.writeFile('output.json', JSON.stringify(json, null, 4), function (err) {
       if(err) throw err;
       console.log('file "output.json" successfully written');
