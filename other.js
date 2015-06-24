@@ -1,0 +1,3 @@
+module.exports = [
+'full stack',
+];

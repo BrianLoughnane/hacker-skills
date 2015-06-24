@@ -6,6 +6,7 @@ var app = express();
 var async = require('async');
 var frontend = require('./frontend.js');
 var backend = require('./backend.js');
+var other = require('./other.js');
 var counter = require('./count.js');
 var url;
 
@@ -48,18 +49,21 @@ app.get('/hackernews', function (req, res) {
 
 
     for(var i = 0; i < links.length; i++) {
-      link = links[i];
-      tasks.push(
-        function(callback) {
-          request(link, function (error, response, html) {
-            if(error) res.send(error);
+      (function () {
+        var link = links[i].slice();
+        tasks.push(
+          function(callback) {
+            request(link, function (error, response, html) {
+              console.log(link);
+              if(error) res.send(error);
 
-            var $ = cheerio.load(html)
-            var postBody = $('body *').text();
-            callback(null, postBody);
-          }); // end request(...)
-        } // end function declaration
-      ) // end tasks.push
+              var $ = cheerio.load(html)
+              var postBody = $('body *').text();
+              callback(null, postBody);
+            }); // end request(...)
+          } // end function declaration
+        ) // end tasks.push
+      })()
     } // end for loop
 
     async.parallel(tasks, function (err, results) {
@@ -68,10 +72,7 @@ app.get('/hackernews', function (req, res) {
       results = results.join(' ').replace(/\s+/g, ' ').toLowerCase();
 
       var counts = {};
-      // var frontend = ['frontend', 'front end', 'front-end', 'web', 'javascript', 'es6', 'node', 'nodejs', 'node.js', 'angular', 'ionic', 'backbone', 'd3', '3js', 'ember', 'react', 'react native', 'flux', 'coffeescript'];
-      // var backend = ['backend', 'back end', 'back-end', 'rails', 'ruby', 'server', 'database', 'system'];
-
-      var keywords = frontend.concat(backend);
+      var keywords = frontend.concat(backend).concat(other);
       var keyword;
 
       for(var i = 0; i < keywords.length; i++) {
@@ -82,6 +83,7 @@ app.get('/hackernews', function (req, res) {
       }
       counts['totalFront'] =  counter(counts, frontend);
       counts['totalBack'] = counter(counts, backend);
+      counts['totalOther'] = counter(counts, other);
 
       var resString = JSON.stringify(counts);
       res.send(resString);

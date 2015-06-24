@@ -12,6 +12,8 @@ module.exports = [
 'c\-\-',
 'server', 
 'database', 
-'system'
+'system',
+'mobile',
+'native',
 ];
 
