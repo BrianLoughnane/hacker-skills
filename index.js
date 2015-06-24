@@ -85,7 +85,11 @@ app.get('/hackernews', function (req, res) {
       counts['totalBack'] = counter(counts, backend);
       counts['totalOther'] = counter(counts, other);
 
-      var resString = JSON.stringify(counts);
+      var data = {
+        labels: keywords,
+        counts: counts
+      }
+      var resString = JSON.stringify(data);
       res.send(resString);
     });
 
