@@ -1,0 +1,21 @@
+module.exports = [
+'frontend', 
+'front end', 
+'front-end', 
+'web', 
+'javascript', 
+'es6', 
+'node', 
+'nodejs', 
+'node.js', 
+'angular', 
+'ionic', 
+'backbone', 
+'d3', 
+'3js', 
+'ember', 
+'react', 
+'react native', 
+'flux', 
+'coffeescript'
+];

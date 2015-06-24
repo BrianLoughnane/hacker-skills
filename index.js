@@ -4,8 +4,9 @@ var request = require('request');
 var cheerio = require('cheerio');
 var app = express();
 var async = require('async');
-// var frontend = require('./frontend.js');
-// var backend = require('./backend.js');
+var frontend = require('./frontend.js');
+var backend = require('./backend.js');
+var counter = require('./count.js');
 var url;
 
 app.use(express.static('client'));
@@ -67,8 +68,9 @@ app.get('/hackernews', function (req, res) {
       results = results.join(' ').replace(/\s+/g, ' ').toLowerCase();
 
       var counts = {};
-      var frontend = ['frontend', 'front end', 'front-end', 'web', 'javascript', 'es6', 'node', 'nodejs', 'node.js', 'angular', 'ionic', 'backbone', 'd3', '3js', 'ember', 'react', 'react native', 'flux', 'coffeescript'];
-      var backend = ['backend', 'back end', 'back-end', 'rails', 'ruby', 'server', 'database', 'system'];
+      // var frontend = ['frontend', 'front end', 'front-end', 'web', 'javascript', 'es6', 'node', 'nodejs', 'node.js', 'angular', 'ionic', 'backbone', 'd3', '3js', 'ember', 'react', 'react native', 'flux', 'coffeescript'];
+      // var backend = ['backend', 'back end', 'back-end', 'rails', 'ruby', 'server', 'database', 'system'];
+
       var keywords = frontend.concat(backend);
       var keyword;
 
@@ -78,18 +80,12 @@ app.get('/hackernews', function (req, res) {
         var matches = results.match(pattern);
         counts[keyword] = (matches) ? matches.length : 0 ;
       }
+      counts['totalFront'] =  counter(counts, frontend);
+      counts['totalBack'] = counter(counts, backend);
 
       var resString = JSON.stringify(counts);
       res.send(resString);
     });
-
-    // function parseAndSend(results) {
-    //   debugger
-    //   // res.send('success');
-    //   res.send(JSON.stringify(results));
-    //   // res.send(resultsString);
-    //   // res.send(JSON.stringify(resultsString));
-    // }
 
     //write scraped data to a file
     // fs.writeFile('output.json', JSON.stringify(json, null, 4), function (err) {
@@ -100,14 +96,6 @@ app.get('/hackernews', function (req, res) {
   });
   // res.send('success!');
 }); // end GET /
-
-// Launch web server
-// Visit a URL on our server that activates the web scraper
-// The scraper will make a request to the website we want to scrape
-// The request will capture the HTML of the website and pass it along to our server
-// We will traverse the DOM and extract the information we want
-// Next, we will format the extracted data into a format we need
-// Finally, we will save this formatted data into a JSON file on our machine
 
 
 app.get('/scrape', function (req, res) {
